@@ -1,0 +1,14 @@
+datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+generator client { provider = "prisma-client-js" }
+
+model User { id String @id @default(uuid()); email String @unique; password String; firstName String?; lastName String?; role String @default("teacher"); district District? @relation(fields:[districtId],references:[id]); districtId String?; submissions Submission[]; progresses Progress[]; certificates Certificate[]; createdAt DateTime @default(now()); updatedAt DateTime @updatedAt }
+model District { id String @id @default(uuid()); name String @unique; region String?; code String?; users User[]; courses Course[]; createdAt DateTime @default(now()); updatedAt DateTime @updatedAt }
+model Course { id String @id @default(uuid()); title String; description String?; district District @relation(fields:[districtId],references:[id]); districtId String; modules Module[]; createdAt DateTime @default(now()); updatedAt DateTime @updatedAt }
+model Module { id String @id @default(uuid()); title String; course Course @relation(fields:[courseId],references:[id]); courseId String; lessons Lesson[] }
+model Lesson { id String @id @default(uuid()); title String; content String; videoUrl String?; module Module @relation(fields:[moduleId],references:[id]); moduleId String; quizzes Quiz[]; assignments Assignment[] }
+model Quiz { id String @id @default(uuid()); question String; options String[]; correctAnswer String; lesson Lesson @relation(fields:[lessonId],references:[id]); lessonId String }
+model Assignment { id String @id @default(uuid()); title String; description String?; dueDate DateTime?; lesson Lesson @relation(fields:[lessonId],references:[id]); lessonId String; submissions Submission[] }
+model Submission { id String @id @default(uuid()); fileUrl String; student User @relation(fields:[studentId],references:[id]); studentId String; assignment Assignment @relation(fields:[assignmentId],references:[id]); assignmentId String; grade Int?; feedback String?; createdAt DateTime @default(now()) }
+model Progress { id String @id @default(uuid()); student User @relation(fields:[studentId],references:[id]); studentId String; lesson Lesson @relation(fields:[lessonId],references:[id]); lessonId String; completed Boolean @default(false); updatedAt DateTime @updatedAt }
+model Certificate { id String @id @default(uuid()); student User @relation(fields:[studentId],references:[id]); studentId String; course Course @relation(fields:[courseId],references:[id]); courseId String; issuedAt DateTime @default(now()); fileUrl String? }
+model ScormPackage { id String @id @default(uuid()); title String; fileUrl String; course Course @relation(fields:[courseId],references:[id]); courseId String }

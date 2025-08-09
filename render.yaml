@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: gnat-backend
+    env: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install && npx prisma generate
+    startCommand: npm start
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: SEED_KEY
+        sync: false
+      - key: FRONTEND_URL
+        value: https://gnatst.onrender.com
+
+  - type: web
+    name: gnat-frontend
+    env: static
+    plan: free
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: build
+    envVars:
+      - key: VITE_API_URL
+        value: https://gnat-backend.onrender.com
