@@ -2,7 +2,7 @@ services:
   - type: web
     name: gnat-backend
     env: node
-    plan: free
+    plan: starter
     rootDir: backend
     buildCommand: |
       npm install --legacy-peer-deps
@@ -21,7 +21,7 @@ services:
   - type: web
     name: gnat-frontend
     env: static
-    plan: free
+    plan: starter
     rootDir: frontend
     buildCommand: |
       npm install --legacy-peer-deps
